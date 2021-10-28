@@ -32,7 +32,7 @@ do
 	esac
 done
 
-# Call wget basged on wheter or not we are skipping directories
+# Call wget based on wheter or not we are skipping directories
 exit_code=0
 if [ -z "${skip_dirs}" ]
 then
