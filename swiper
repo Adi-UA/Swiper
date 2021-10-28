@@ -1,0 +1,59 @@
+#! /usr/bin/bash
+
+##########################################################
+# Info
+# Name: Adi Banerjee
+# GitHub: https://github.com/Adi-UA
+# License: MIT
+# Version: 1.0
+##########################################################
+
+##########################################################
+# Description
+# This script downloads files of the specified type from the given url.
+# The host directory is never downloaded. That is, wget always uses -nH.
+
+# Script Options
+# Use -u "<url>" to specify the url.
+# Use -e "<file extension>" to specify the file type to download. 
+# Do not specify this if you want to download everything.
+# Use -s <integer> to skip over a certain number of parent directories 
+# in your url. Look at the documentation for --cut-dirs in wget to 
+# understand what this is doing.'
+##########################################################
+
+# Grab the options specified
+while getopts u:s:e: flag
+do
+	case "${flag}" in
+		u) url=${OPTARG};;
+		s) skip_dirs=${OPTARG};;
+		e) extension=${OPTARG};;
+	esac
+done
+
+# Call wget basged on wheter or not we are skipping directories
+exit_code=0
+if [ -z "${skip_dirs}" ]
+then
+
+	echo "Grabbing files with extension *${extension} from ${url}"
+	wget -nH -r -A "*${extension}" "${url}"
+	exit_code=${?}
+else
+
+	echo "Grabbing files with extension *${extension} from ${url}"
+	echo "Attempting to invoke wget with ${skip_dirs}"
+	wget -nH --cut-dirs=${skip_dirs} -r -A "*${extension}" "${url}"
+	exit_code=${?}
+fi
+
+if [ "${exit_code}" -eq "0" ]
+then
+	echo "Done!"
+	echo "Please check your current directory for the files."
+	exit 0
+else
+	echo "Something went wrong. Please check your invocation."
+	exit 1
+fi
